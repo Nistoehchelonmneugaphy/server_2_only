@@ -1,4 +1,4 @@
-use config_reader::ServerConfig;
+use server_config::ServerConfig;
 use http_stuff::{
     http_request_parsing::{
         HttpParserConfig, HttpRequestData, HttpRequestParsingError, parse_http_request,

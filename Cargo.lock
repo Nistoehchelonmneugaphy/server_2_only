@@ -303,6 +303,7 @@ dependencies = [
  "encoding",
  "error_structs",
  "indexmap",
+ "server_config",
  "tokio",
  "tracing",
  "url",
@@ -663,11 +664,23 @@ version = "0.1.0"
 dependencies = [
  "config_reader",
  "dotenvy",
+ "encoding",
+ "error_structs",
  "http_stuff",
+ "server_config",
  "tokio",
  "tracing",
  "tracing-appender",
  "tracing-subscriber",
+ "url",
+]
+
+[[package]]
+name = "server_config"
+version = "0.1.0"
+dependencies = [
+ "humantime-serde",
+ "serde",
 ]
 
 [[package]]

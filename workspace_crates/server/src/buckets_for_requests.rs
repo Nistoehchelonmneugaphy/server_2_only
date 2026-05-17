@@ -1,4 +1,4 @@
-use config_reader::ServerConfig;
+use server_config::ServerConfig;
 use std::collections::HashMap;
 use std::net::IpAddr;
 use std::sync::Arc;

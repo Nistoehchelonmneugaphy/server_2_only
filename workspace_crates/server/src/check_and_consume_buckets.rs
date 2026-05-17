@@ -1,4 +1,4 @@
-use config_reader::ServerConfig;
+use server_config::ServerConfig;
 use http_stuff::http_response::standalone_response;
 use std::net::IpAddr;
 use std::time::Duration;

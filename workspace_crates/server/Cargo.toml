@@ -11,4 +11,8 @@ dotenvy = { workspace = true }
 tokio = { workspace = true }
 http_stuff = { workspace = true }
 config_reader = { workspace = true }
+server_config = { workspace = true }
+encoding = { workspace = true }
+url = { workspace = true }
+error_structs = { workspace = true }
 

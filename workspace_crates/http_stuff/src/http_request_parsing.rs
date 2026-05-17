@@ -1,4 +1,4 @@
-use config_reader::ServerConfig;
+use server_config::ServerConfig;
 use encoding::decode_request_string;
 use error_structs::SomeSortOfError;
 use indexmap::IndexMap;

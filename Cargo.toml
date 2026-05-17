@@ -20,6 +20,7 @@ members = ["workspace_crates/*"]
 
 # internal workspace crates
 
+server_config = { path = "workspace_crates/server_config" } 
 config_reader = { path = "workspace_crates/config_reader" } 
 server = { path = "workspace_crates/server" }
 http_stuff = { path = "workspace_crates/http_stuff" }

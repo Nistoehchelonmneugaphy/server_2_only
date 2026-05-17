@@ -11,3 +11,4 @@ url = { workspace = true }
 indexmap = { workspace = true }
 config_reader = { workspace = true }
 error_structs = { workspace = true }
+server_config = { workspace = true }
