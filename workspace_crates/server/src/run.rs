@@ -38,7 +38,7 @@ pub type HandlerFn = Arc<
         + Send
         + Sync,
 >;
-pub async fn run(handler: HandlerFn) -> std::io::Result<()> {
+pub async fn run(handler: HandlerFn, app_executable_version: String,) -> std::io::Result<()> {
     let args = match parse_args::parse_args() {
         Ok(args) => args,
         Err(e) => {
@@ -48,11 +48,11 @@ pub async fn run(handler: HandlerFn) -> std::io::Result<()> {
     };
 
     if args.version {
-        println!("App version: {}", app_executable_version::VERSION);
+        println!("App version: {}", app_executable_version);
         return Ok(());
     }
     dotenvy::dotenv().ok();
-    tracing::info!("Server version: {}", app_executable_version::VERSION);
+    tracing::info!("Server version: {}", app_executable_version);
 
     let server_config = config_reader::read_config::<ServerConfig>(PathBuf::from(".env"));
 
@@ -62,7 +62,7 @@ pub async fn run(handler: HandlerFn) -> std::io::Result<()> {
     let _guard = self::log_tracing::init_tracing(true, file_appender);
 
     tracing::info!("Starting the server...");
-    tracing::info!("Version: {}", app_executable_version::VERSION);
+    tracing::info!("Version: {}", app_executable_version);
     let tokio_metrics = tokio::runtime::Handle::current().metrics();
     tracing::info!(
         "Num of Tokio worker threads: {}",
