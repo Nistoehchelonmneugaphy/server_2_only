@@ -1,10 +1,12 @@
-use server_config::ServerConfig;
 use http_stuff::{
     http_request_parsing::{
         HttpParserConfig, HttpRequestData, HttpRequestParsingError, parse_http_request,
     },
-    http_response::{HttpResponseData, KeepAliveOrClose, StatusCode, response_to_bytes, standalone_response},
+    http_response::{
+        HttpResponseData, KeepAliveOrClose, StatusCode, response_to_bytes, standalone_response,
+    },
 };
+use server_config::ServerConfig;
 
 use crate::{
     buckets_for_requests::{
@@ -38,7 +40,11 @@ pub type HandlerFn = Arc<
         + Send
         + Sync,
 >;
-pub async fn run(handler: HandlerFn, app_executable_version: String,) -> std::io::Result<()> {
+pub async fn run(
+    app_executable_version: String,
+    handler: HandlerFn,
+    background_tasks: Vec<Pin<Box<dyn Future<Output = ()> + Send>>>,
+) -> std::io::Result<()> {
     let args = match parse_args::parse_args() {
         Ok(args) => args,
         Err(e) => {
@@ -88,6 +94,9 @@ pub async fn run(handler: HandlerFn, app_executable_version: String,) -> std::io
     let ip_buckets: IpBuckets = Arc::new(Mutex::new(HashMap::new()));
 
     let mut tasks = tokio::task::JoinSet::new();
+    for task in background_tasks {
+        tasks.spawn(task);
+    }
     loop {
         tokio::select! {
             res = listener.accept() => {
