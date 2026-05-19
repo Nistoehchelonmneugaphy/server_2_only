@@ -41,7 +41,7 @@ pub type HandlerFn = Arc<
         + Sync,
 >;
 pub struct BackgroundSpawnTasks {
-    pub the_vec: Option<Vec<Pin<Box<dyn Future<Output = ()> + Send>>>>,
+    pub new_tasks_to_spawn: Option<Vec<Pin<Box<dyn Future<Output = ()> + Send>>>>,
 }
 pub async fn run(
     app_executable_version: String,
@@ -97,7 +97,7 @@ pub async fn run(
     let ip_buckets: IpBuckets = Arc::new(Mutex::new(HashMap::new()));
 
     let mut tasks = tokio::task::JoinSet::new();
-    match background_tasks.the_vec {
+    match background_tasks.new_tasks_to_spawn {
         None => {}
         Some(tasks_to_spawn) => {
             for task in tasks_to_spawn {
