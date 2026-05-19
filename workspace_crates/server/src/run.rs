@@ -41,7 +41,7 @@ pub type HandlerFn = Arc<
         + Sync,
 >;
 pub struct BackgroundSpawnTasks {
-    the_vec: Option<Vec<Pin<Box<dyn Future<Output = ()> + Send>>>>,
+    pub the_vec: Option<Vec<Pin<Box<dyn Future<Output = ()> + Send>>>>,
 }
 pub async fn run(
     app_executable_version: String,
