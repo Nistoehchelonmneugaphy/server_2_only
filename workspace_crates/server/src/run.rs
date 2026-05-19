@@ -40,10 +40,16 @@ pub type HandlerFn = Arc<
         + Send
         + Sync,
 >;
+pub enum BackgroundTasks {
+    NoBackgroundTasks,
+    VecOfBackgroundTasks {
+        the_vec: Vec<Pin<Box<dyn Future<Output = ()> + Send>>>,
+    },
+}
 pub async fn run(
     app_executable_version: String,
     handler: HandlerFn,
-    background_tasks: Vec<Pin<Box<dyn Future<Output = ()> + Send>>>,
+    background_tasks: BackgroundTasks,
 ) -> std::io::Result<()> {
     let args = match parse_args::parse_args() {
         Ok(args) => args,
@@ -94,8 +100,13 @@ pub async fn run(
     let ip_buckets: IpBuckets = Arc::new(Mutex::new(HashMap::new()));
 
     let mut tasks = tokio::task::JoinSet::new();
-    for task in background_tasks {
-        tasks.spawn(task);
+    match background_tasks {
+        BackgroundTasks::NoBackgroundTasks => {}
+        BackgroundTasks::VecOfBackgroundTasks { the_vec } => {
+            for task in the_vec {
+                tasks.spawn(task);
+            }
+        }
     }
     loop {
         tokio::select! {
