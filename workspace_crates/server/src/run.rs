@@ -32,6 +32,8 @@ use tokio::{
     time::timeout,
 };
 
+use tokio_util::sync::CancellationToken;
+
 use tracing::{Span, field, info, span::Id};
 use tracing_appender::rolling;
 
@@ -42,6 +44,8 @@ pub type HandlerFn = Arc<
 >;
 pub struct BackgroundSpawnTasks {
     pub new_tasks_to_spawn: Option<Vec<Pin<Box<dyn Future<Output = ()> + Send>>>>,
+    pub cancellation_token: Option<CancellationToken>,
+    
 }
 pub async fn run(
     app_executable_version: String,
@@ -138,6 +142,13 @@ pub async fn run(
             },
             _ = crate::shutdown_signal::shutdown_signal() => {
                 tracing::info!("Shutdown signal received");
+
+                 // Cancel all background tasks
+                if let Some(token) = &background_tasks.cancellation_token {
+                    tracing::info!("Calling cancellation token's cancel to inform background tasks");
+                    token.cancel();
+                }
+
                 break;
             }
         }

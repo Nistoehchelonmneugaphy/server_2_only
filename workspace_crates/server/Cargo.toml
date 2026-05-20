@@ -9,6 +9,7 @@ tracing-subscriber = { workspace = true }
 tracing-appender = { workspace = true }
 dotenvy = { workspace = true }
 tokio = { workspace = true }
+tokio-util = { workspace = true }
 http_stuff = { workspace = true }
 config_reader = { workspace = true }
 server_config = { workspace = true }
