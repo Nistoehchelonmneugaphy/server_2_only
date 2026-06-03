@@ -20,7 +20,6 @@ use crate::{
 use std::{
     collections::HashMap,
     net::IpAddr,
-    path::PathBuf,
     pin::Pin,
     sync::Arc,
     time::{Duration, Instant},
@@ -48,6 +47,7 @@ pub struct BackgroundSpawnTasks {
     
 }
 pub async fn run(
+    server_config: ServerConfig,
     app_executable_version: String,
     handler: HandlerFn,
     background_tasks: BackgroundSpawnTasks,
@@ -64,14 +64,11 @@ pub async fn run(
         println!("App version: {}", app_executable_version);
         return Ok(());
     }
-    dotenvy::dotenv().ok();
     tracing::info!("Server version: {}", app_executable_version);
-
-    let server_config = config_reader::read_config::<ServerConfig>(PathBuf::from("http_server.env"));
 
     // File appender (rotates daily)
     let file_appender =
-        rolling::daily(std::env::var("RUST_LOG_DIRECTORY_PATH").unwrap(), "app.log");
+        rolling::daily(server_config.rust_log_directory_path.clone(), "app.log");
     let _guard = self::log_tracing::init_tracing(true, file_appender);
 
     tracing::info!("Starting the server...");
