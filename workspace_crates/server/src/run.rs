@@ -12,9 +12,7 @@ use crate::{
     buckets_for_requests::{
         GlobalBuckets, IpBuckets, TimeBucket, TokenAndTimeBuckets, TokenAndTimeBucketsAndLastSeen,
         TokenBucket,
-    },
-    check_and_consume_buckets::check_and_consume_buckets,
-    log_tracing, parse_args,
+    }, check_and_consume_buckets::check_and_consume_buckets, handler_fn::HandlerFn, log_tracing, parse_args
 };
 
 use std::{
@@ -36,15 +34,9 @@ use tokio_util::sync::CancellationToken;
 use tracing::{Span, field, info, span::Id};
 use tracing_appender::rolling;
 
-pub type HandlerFn = Arc<
-    dyn Fn(HttpRequestData, ServerConfig) -> Pin<Box<dyn Future<Output = HttpResponseData> + Send>>
-        + Send
-        + Sync,
->;
 pub struct BackgroundSpawnTasks {
     pub new_tasks_to_spawn: Option<Vec<Pin<Box<dyn Future<Output = ()> + Send>>>>,
     pub cancellation_token: Option<CancellationToken>,
-    
 }
 pub async fn run(
     server_config: ServerConfig,
@@ -67,8 +59,7 @@ pub async fn run(
     tracing::info!("Server version: {}", app_executable_version);
 
     // File appender (rotates daily)
-    let file_appender =
-        rolling::daily(server_config.rust_log_directory_path.clone(), "app.log");
+    let file_appender = rolling::daily(server_config.rust_log_directory_path.clone(), "app.log");
     let _guard = self::log_tracing::init_tracing(true, file_appender);
 
     tracing::info!("Starting the server...");
@@ -320,7 +311,7 @@ pub async fn generate_response(
     server_config: ServerConfig,
     handler: HandlerFn,
 ) -> HttpResponseData {
-    let mut response_data = handler(request_data.clone(), server_config).await;
+    let mut response_data = handler.call(request_data.clone(), server_config).await;
     let close_or_keep_alive = if keep_alive_max_requests_reached {
         KeepAliveOrClose::Close
     } else {
