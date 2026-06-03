@@ -5,6 +5,8 @@ pub mod parse_args;
 pub mod run;
 pub mod shutdown_signal;
 pub mod handler_fn;
+pub use handler_fn::HandlerFn;
+pub use handler_fn::HandlerFnInner;
 pub use run::run; 
 pub use run::BackgroundSpawnTasks;
 // include other workspace crates so external users can use server::http_stuff::http_parser::parse() or server::config_reader::read()

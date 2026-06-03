@@ -3,7 +3,7 @@ use std::{pin::Pin, sync::Arc};
 use http_stuff::{http_request_parsing::HttpRequestData, http_response::HttpResponseData};
 use server_config::ServerConfig;
 
-type HandlerFnInner = Arc<
+pub type HandlerFnInner = Arc<
     dyn Fn(HttpRequestData, ServerConfig) -> Pin<Box<dyn Future<Output = HttpResponseData> + Send>>
         + Send
         + Sync,
