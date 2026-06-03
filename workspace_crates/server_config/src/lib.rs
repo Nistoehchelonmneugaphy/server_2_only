@@ -67,3 +67,39 @@ pub struct ServerConfig {
     #[serde(default = "default_max_cookies_count")]
     pub max_cookies_count: u64,
 }
+
+impl ServerConfig {
+    pub fn new(ip: String, port: u64, rust_log_directory_path: String) -> Self {
+        Self {
+            rust_log_directory_path,
+            port,
+            ip,
+            rust_log: default_rust_log(),
+            server_global_request_token_bucket_capacity:
+                default_server_global_request_token_bucket_capacity(),
+            server_global_request_token_bucket_refill_rate_per_millis:
+                default_server_global_request_token_bucket_refill_rate_per_millis(),
+            server_time_credits_refill_rate_per_millis:
+                default_server_time_credits_refill_rate_per_millis(),
+            server_time_credits_capacity: default_server_time_credits_capacity(),
+            per_ip_time_credits_refill_rate_per_millis:
+                default_per_ip_time_credits_refill_rate_per_millis(),
+            per_ip_time_credits_capacity: default_per_ip_time_credits_capacity(),
+            per_ip_token_bucket_capacity: default_per_ip_token_bucket_capacity(),
+            per_ip_token_bucket_refill_rate_per_millis:
+                default_per_ip_token_bucket_refill_rate_per_millis(),
+            keep_alive_enabled: default_keep_alive_enabled(),
+            keep_alive_max_requests_per_connection: default_keep_alive_max_requests_per_connection(
+            ),
+            keep_alive_idle_timeout: default_keep_alive_idle_timeout(),
+            common_stream_timeout: default_common_stream_timeout(),
+            max_total_headers_size_bytes: default_max_total_headers_size_bytes(),
+            max_headers_count: default_max_headers_count(),
+            max_header_name_length: default_max_header_name_length(),
+            max_header_value_length: default_max_header_value_length(),
+            max_total_body_size_bytes: default_max_total_body_size_bytes(),
+            max_request_path_length: default_max_request_path_length(),
+            max_cookies_count: default_max_cookies_count(),
+        }
+    }
+}
