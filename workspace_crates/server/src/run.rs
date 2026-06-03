@@ -67,7 +67,7 @@ pub async fn run(
     dotenvy::dotenv().ok();
     tracing::info!("Server version: {}", app_executable_version);
 
-    let server_config = config_reader::read_config::<ServerConfig>(PathBuf::from(".env"));
+    let server_config = config_reader::read_config::<ServerConfig>(PathBuf::from("http_server.env"));
 
     // File appender (rotates daily)
     let file_appender =
