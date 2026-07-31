@@ -1,5 +1,7 @@
 use std::fmt::Debug;
 
+use tracing::error;
+
 #[derive(Debug)]
 pub struct PublicError {
     pub message: String,
@@ -7,7 +9,7 @@ pub struct PublicError {
 impl PublicError {
     pub fn new<E: Debug>(s: E) -> Self {
         let message = format!("{s:?}");
-        println!("InternalAppError: {}", message.clone());
+        error!("InternalAppError: {}", message.clone());
         Self { message }
     }
 }
@@ -19,7 +21,7 @@ pub struct InternalAppError {
 impl InternalAppError {
     pub fn new<E: Debug>(s: E) -> Self {
         let message = format!("{s:?}");
-        println!("InternalAppError: {}", message.clone());
+        error!("InternalAppError: {}", message.clone());
         Self { message }
     }
 }
@@ -30,7 +32,7 @@ pub struct ExpectedToGetButFailed {
 impl ExpectedToGetButFailed {
     pub fn new<E: Debug>(s: E) -> Self {
         let message = format!("{s:?}");
-        println!(
+        error!(
             "Expected the thingie to exist but apparently it does not: {}",
             message.clone()
         );
