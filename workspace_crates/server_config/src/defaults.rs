@@ -1,6 +1,5 @@
 use std::time::Duration;
 
-
 pub fn default_rust_log() -> String {
     "debug".to_string()
 }

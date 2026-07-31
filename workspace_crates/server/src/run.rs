@@ -12,7 +12,10 @@ use crate::{
     buckets_for_requests::{
         GlobalBuckets, IpBuckets, TimeBucket, TokenAndTimeBuckets, TokenAndTimeBucketsAndLastSeen,
         TokenBucket,
-    }, check_and_consume_buckets::check_and_consume_buckets, handler_fn::HandlerFn, log_tracing, parse_args
+    },
+    check_and_consume_buckets::check_and_consume_buckets,
+    handler_fn::HandlerFn,
+    log_tracing, parse_args,
 };
 
 use std::{

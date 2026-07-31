@@ -1,7 +1,7 @@
-use server_config::ServerConfig;
 use encoding::decode_request_string;
 use error_structs::SomeSortOfError;
 use indexmap::IndexMap;
+use server_config::ServerConfig;
 use std::net::IpAddr;
 use std::{
     collections::HashMap,

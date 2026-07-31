@@ -21,7 +21,9 @@ impl HandlerFn {
         Fut: Future<Output = HttpResponseData> + Send + 'static,
     {
         Self {
-            inner: Arc::new(move |request_data, server_config| Box::pin(f(request_data, server_config))),
+            inner: Arc::new(move |request_data, server_config| {
+                Box::pin(f(request_data, server_config))
+            }),
         }
     }
 

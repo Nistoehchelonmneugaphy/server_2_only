@@ -1,5 +1,5 @@
-use server_config::ServerConfig;
 use http_stuff::http_response::standalone_response;
+use server_config::ServerConfig;
 use std::net::IpAddr;
 use std::time::Duration;
 use std::time::Instant;
