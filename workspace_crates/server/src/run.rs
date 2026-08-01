@@ -12,16 +12,12 @@ use crate::{
     buckets_for_requests::{
         GlobalBuckets, IpBuckets, TimeBucket, TokenAndTimeBuckets, TokenAndTimeBucketsAndLastSeen,
         TokenBucket,
-    },
-    check_and_consume_buckets::check_and_consume_buckets,
-    handler_fn::HandlerFn,
-    log_tracing, parse_args,
+    }, check_and_consume_buckets::check_and_consume_buckets, handler_fn::HandlerFn, log_tracing, parse_args, server_builder_typestate::{BackgroundTasks},
 };
 
 use std::{
     collections::HashMap,
     net::IpAddr,
-    pin::Pin,
     sync::Arc,
     time::{Duration, Instant},
 };
@@ -37,15 +33,12 @@ use tokio_util::sync::CancellationToken;
 use tracing::{Span, field, info, span::Id};
 use tracing_appender::rolling;
 
-pub struct BackgroundSpawnTasks {
-    pub new_tasks_to_spawn: Option<Vec<Pin<Box<dyn Future<Output = ()> + Send>>>>,
-    pub cancellation_token: Option<CancellationToken>,
-}
-pub async fn run(
+pub async fn server_run_inner(
     server_config: ServerConfig,
     app_executable_version: String,
     handler: HandlerFn,
-    background_tasks: BackgroundSpawnTasks,
+    background_tasks: Option<BackgroundTasks>,
+    bg_tasks_cancellation_token: Option<CancellationToken>
 ) -> std::io::Result<()> {
     let args = match parse_args::parse_args() {
         Ok(args) => args,
@@ -92,12 +85,10 @@ pub async fn run(
     let ip_buckets: IpBuckets = Arc::new(Mutex::new(HashMap::new()));
 
     let mut tasks = tokio::task::JoinSet::new();
-    match background_tasks.new_tasks_to_spawn {
-        None => {}
-        Some(tasks_to_spawn) => {
-            for task in tasks_to_spawn {
-                tasks.spawn(task);
-            }
+
+    if let Some(bg_tasks) = background_tasks {
+        for task in bg_tasks {
+            tasks.spawn(task);
         }
     }
     loop {
@@ -135,7 +126,7 @@ pub async fn run(
                 tracing::info!("Shutdown signal received");
 
                  // Cancel all background tasks
-                if let Some(token) = &background_tasks.cancellation_token {
+                if let Some(token) = &bg_tasks_cancellation_token {
                     tracing::info!("Calling cancellation token's cancel to inform background tasks");
                     token.cancel();
                 }
