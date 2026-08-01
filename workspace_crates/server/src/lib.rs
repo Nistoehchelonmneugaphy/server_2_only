@@ -9,7 +9,7 @@ pub mod shutdown_signal;
 pub use handler_fn::HandlerFn;
 pub use handler_fn::HandlerFnInner;
 pub use server_builder_typestate::BackgroundTasks;
-pub use run::server_run_inner;
+pub use server_builder_typestate::ServerBuilder;
 // include other workspace crates so external users can use server::http_stuff::http_parser::parse() or server::config_reader::read()
 pub use config_reader;
 pub use encoding;

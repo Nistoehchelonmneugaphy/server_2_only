@@ -6,11 +6,11 @@ use std::future::Future;
 use std::pin::Pin;
 use tokio_util::sync::CancellationToken;
 
-use crate::{HandlerFn, server_run_inner};
+use crate::{HandlerFn, run::server_run_inner};
 
 pub type BackgroundTasks = Vec<Pin<Box<dyn Future<Output = ()> + Send>>>;
 
-pub struct Server<State> {
+pub struct ServerBuilder<State> {
     config: ServerConfig,
     version: String,
     handler: HandlerFn,
@@ -18,7 +18,7 @@ pub struct Server<State> {
     _state: std::marker::PhantomData<State>,
 }
 
-impl Server<HandlerOnly> {
+impl ServerBuilder<HandlerOnly> {
     pub fn new(config: ServerConfig, version: String, handler: HandlerFn) -> Self {
         Self {
             config,
@@ -41,8 +41,8 @@ impl Server<HandlerOnly> {
         self,
         tasks: Vec<Pin<Box<dyn Future<Output = ()> + Send>>>,
         cancellation_token: CancellationToken,
-    ) -> Server<WithTasks> {
-        Server {
+    ) -> ServerBuilder<WithTasks> {
+        ServerBuilder {
             config: self.config,
             version: self.version,
             handler: self.handler,
@@ -52,7 +52,7 @@ impl Server<HandlerOnly> {
     }
 }
 
-impl Server<WithTasks> {
+impl ServerBuilder<WithTasks> {
     /// Run the server **with** the background tasks and their cancellation token.
     pub async fn run_handler_and_background_tasks(self) -> std::io::Result<()> {
         let (tasks, cancellation_token) =
