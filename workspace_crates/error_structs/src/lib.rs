@@ -2,6 +2,7 @@ use std::fmt::Debug;
 
 use tracing::error;
 
+
 #[derive(Debug)]
 pub struct PublicError {
     pub message: String,
